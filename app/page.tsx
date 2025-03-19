@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { UserButton } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,7 +14,7 @@ export default async function Home() {
           <h1 className="text-4xl md:text-5xl font-bold text-center">
             Welcome to <br />
             <span className="text-blue-700 text-5xl md:text-6xl">
-              Kinda HMS
+              Healthify HMS
             </span>
           </h1>
         </div>
@@ -22,9 +23,14 @@ export default async function Home() {
             Manage your hospital operations, patients, and more with Kinda HMS.
           </h1>
         </div>
-        <div className="flex flex-col md:flex-row items-center justify-center mt-8">
+        <div className="flex gap-4 flex-col md:flex-row items-center justify-center mt-8">
           {userId ? (
-            <></>
+            <>
+              <Link href="/dashboard">
+                <Button className="md:text-base">Dashboard</Button>
+              </Link>
+              <UserButton />
+            </>
           ) : (
             <>
               <Link href="/sign-in">
@@ -41,9 +47,9 @@ export default async function Home() {
         </div>
       </div>
       <footer className="mt-8">
-          <p className="text-center text-sm">
-            &copy; {new Date().getFullYear()} Kinda HMS. All rights reserved.
-          </p>
+        <p className="text-center text-sm">
+          &copy; {new Date().getFullYear()} Healthify HMS. All rights reserved.
+        </p>
       </footer>
     </div>
   );
