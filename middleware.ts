@@ -9,20 +9,22 @@ const matchers = Object.keys(routeAccess).map((route) => ({
 }))
 
 export default clerkMiddleware(async (auth, req) => {
-  const {userId, sessionClaims} = await auth();
+  const { userId, sessionClaims } = await auth();
   const url = new URL(req.url);
-  const role = sessionClaims?.metadata?.role
-      ? sessionClaims.metadata.role
-      : userId
-      ? "patient"
-      : "sign-in";
+  const role = sessionClaims?.metadata?.role ?? (userId ? "patient" : "sign-in");
 
-      const matchingRoute = matchers.find(({matcher}) => matcher(req));
+  const pathname = url.pathname;
 
-      if (matchingRoute && !matchingRoute.allowedRoles.includes(role)) {
-        return NextResponse.redirect(new URL(`/${role}`, url.origin));
-      }
-      return NextResponse.next();
+  if (pathname === "/" && userId && role) {
+    return NextResponse.redirect(new URL(`/${role}`, url.origin));
+  }
+
+  const matchingRoute = matchers.find(({ matcher }) => matcher(req));
+  if (matchingRoute && !matchingRoute.allowedRoles.includes(role)) {
+    return NextResponse.redirect(new URL(`/${role}`, url.origin));
+  }
+
+  return NextResponse.next();
 });
 
 export const config = {
